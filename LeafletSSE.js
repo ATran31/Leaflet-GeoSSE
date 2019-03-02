@@ -11,13 +11,20 @@ var L.SSELyr = L.GeoJSON.extend({
         * and monitoring the stream on the specified channelName.
         *
         * Keyword Arguments:
+        * channelName (optional) - The channel of the event server to subscribe to.
         * featureIdField (required) - used to identify the feature to update/
-        * replace on update events.
+        * replace on update events or delete.
         */
 
 
         // set stream source
-        let source = new EventSource(`${this.options.eventUrl}?channel=${channelName}`);
+        let sourceUrl
+        if (channelName !== null){
+            sourceUrl = `${this.options.eventUrl}?channel=${channelName}`
+        } else {
+            sourceUrl = `${this.options.eventUrl}`
+        }
+        let source = new EventSource(sourceUrl);
 
         source.addEventListener('create', function createEvent(event) {
             /*
