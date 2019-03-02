@@ -19,6 +19,41 @@ var L.SSELyr = L.GeoJSON.extend({
         // set stream source
         let source = new EventSource(`${this.options.eventUrl}?channel=${channelName}`);
 
+        source.addEventListener('create', function createEvent(event) {
+            /*
+            * On create events, simply add the data. The expected data sent by this event is a 
+            * geojson feature.
+            */
+            let geojson = JSON.parse(event.data);
+            this.addData(geojson);
+        }, false);
+
+        source.addEventListener('update', function updateEvent(event) {
+            /*
+            * On update events, replace the existing feature based on featureId. The expected data sent by  
+            * this event is a single geojson feature.
+            */
+            let geojson = JSON.parse(event.data);
+            for (let l of this.getLayers()){
+                if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
+                    this.removeLayer(l);
+                    this.addData(data.geojson);
+                }
+            }
+        }, false);
+
+        source.addEventListener('delete', function deleteEvent(event) {
+            /*
+            * On delete events, remove the existing feature based on featureId. The expected data sent by  
+            * this event is a single geojson feature.
+            */
+            let geojson = JSON.parse(event.data);
+            for (let l of this.getLayers()){
+                if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
+                    this.removeLayer(l);
+                }
+            }
+        }, false);
 
         // handle connection open event
         source.onopen = function(event){
@@ -60,4 +95,7 @@ var L.SSELyr = L.GeoJSON.extend({
 
         this.eventSource = source;
     },
+    disconnect: function(){
+        this.eventSource.close();
+    }
 });
