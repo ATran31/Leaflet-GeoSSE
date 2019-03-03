@@ -101,6 +101,7 @@ var L.GeoJSON.SSE = L.GeoJSON.extend({
             if (source.readyState === 2){
                 this.connectToEventServer(channelName, featureIdField);
             }
+            console.log(event.data);
         }
 
         this.eventSource = source;
