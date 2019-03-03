@@ -113,3 +113,8 @@ var L.GeoJSON.SSE = L.GeoJSON.extend({
         this.eventSource.close();
     }
 });
+
+// factory function
+var L.geoJSON.sse = function (data, options){
+    return new L.GeoJSON.SSE(data, options);
+}
