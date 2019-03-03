@@ -1,4 +1,4 @@
-var L.SSELyr = L.GeoJSON.extend({
+var L.GeoJSON.SSE = L.GeoJSON.extend({
     /*
     * Feature Layer class used to handle real-time reloading of
     * geojson layers via server sent events.
