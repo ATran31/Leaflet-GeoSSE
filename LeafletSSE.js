@@ -1,17 +1,20 @@
 var L.SSELyr = L.GeoJSON.extend({
     /*
     * Feature Layer class used to handle real-time reloading of
-    * geojson layers.
+    * geojson layers via server sent events.
     *
     * Extends L.GeoJSON class.
     */
     connectToEventServer: function(channelName, featureIdField){
         /*
-        * Updates the layer features by connecting to the event server
-        * and monitoring the stream on the specified channelName.
+        * Establishes connection to the event server
+        * and subscribes to the event stream, optionally on channelName.
         *
         * Keyword Arguments:
         * channelName (optional) - The channel of the event server to subscribe to.
+        * If no channelName is provided, then auto subscribe to events not published
+        * to a specific channel.
+        *
         * featureIdField (required) - used to identify the feature to update/
         * replace on update events or delete.
         */
@@ -103,6 +106,9 @@ var L.SSELyr = L.GeoJSON.extend({
         this.eventSource = source;
     },
     disconnect: function(){
+        /*
+        * Disconnect from the event server and unsubscribe from all channels.
+        */
         this.eventSource.close();
     }
 });
