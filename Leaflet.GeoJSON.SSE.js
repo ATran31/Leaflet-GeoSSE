@@ -1,4 +1,4 @@
-var L.GeoJSON.SSE = L.GeoJSON.extend({
+var GeoJsonSSE = L.GeoJSON.extend({
     /*
     * Feature Layer class used to handle real-time reloading of
     * geojson layers via server sent events.
@@ -19,6 +19,7 @@ var L.GeoJSON.SSE = L.GeoJSON.extend({
         * replace on update events or delete.
         */
 
+        let cls=this;
 
         // set stream source
         let sourceUrl
@@ -35,7 +36,7 @@ var L.GeoJSON.SSE = L.GeoJSON.extend({
             * geojson feature.
             */
             let geojson = JSON.parse(event.data);
-            this.addData(geojson);
+            cls.addData(geojson);
         }, false);
 
         source.addEventListener('update', function updateEvent(event) {
@@ -44,10 +45,10 @@ var L.GeoJSON.SSE = L.GeoJSON.extend({
             * this event is a single geojson feature.
             */
             let geojson = JSON.parse(event.data);
-            for (let l of this.getLayers()){
+            for (let l of cls.getLayers()){
                 if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
-                    this.removeLayer(l);
-                    this.addData(data.geojson);
+                    cls.removeLayer(l);
+                    cls.addData(geojson);
                 }
             }
         }, false);
@@ -58,9 +59,9 @@ var L.GeoJSON.SSE = L.GeoJSON.extend({
             * this event is a single geojson feature.
             */
             let geojson = JSON.parse(event.data);
-            for (let l of this.getLayers()){
+            for (let l of cls.getLayers()){
                 if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
-                    this.removeLayer(l);
+                    cls.removeLayer(l);
                 }
             }
         }, false);
@@ -99,7 +100,7 @@ var L.GeoJSON.SSE = L.GeoJSON.extend({
         source.onerror = function(event){
             // reconnect if the connection is closed
             if (source.readyState === 2){
-                this.connectToEventServer(channelName, featureIdField);
+                cls.connectToEventServer(channelName, featureIdField);
             }
             console.log(event.data);
         }
@@ -115,6 +116,6 @@ var L.GeoJSON.SSE = L.GeoJSON.extend({
 });
 
 // factory function
-var L.geoJSON.sse = function (data, options){
-    return new L.GeoJSON.SSE(data, options);
+L.geoJsonSSE = function (data, options){
+    return new GeoJsonSSE(data, options);
 }
