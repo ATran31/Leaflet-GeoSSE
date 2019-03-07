@@ -1,10 +1,10 @@
 ![Leaflet 1.0 compatible!](https://img.shields.io/badge/Leaflet%201.0-%E2%9C%93-1EB300.svg?style=flat)
 # Leaflet SSE
-An extension of the GeoJson class that allows features to be updated based on [server sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events).
+A Leaflet plugin to enable real-time data updates using [server sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events).
 ## Events
 The events published by the server must have a valid geojson feature in the `data` field.
 
-The geojson feature's properties must include a field that uniquely identifies the feature. This identifier is used to facilitate replacement of the displayed feature with its updated instance when the server sends an update event.
+The geojson feature's properties must include a field that uniquely identifies the feature. This identifier is used to facilitate replacement of the current feature with its updated instance when the server sends an update event.
 ### Example event from server:
 ```
 {
@@ -23,15 +23,16 @@ data:
 }
 ```
 ## Usage
-### Initializing an instance
+### Initializing
 ```
-// Initialize same as any L.geoJson instance passing in the required eventUrl option.
-var sseLyr = L.geoJson.sse('my-data.geojson', {
-    // set layer options...
+// Initialize same as any L.geoJson instance.
+var sseLyr = L.geoJsonSSE('my-data.geojson', {
+    url: 'https://my-site.com/stream'
+    // set other layer options...
 });
 ```
 ### Connecting to the event server
-The server connection requires that you pass in , optionally specify a channel name to subscribe to. If no channel name is given then the connection will only listen to events not published to a channel.
+The connection requires that you pass in a property field that uniquely identifies the feature, the url of the event server, and optionally specify a channel name to subscribe to. If no channel name is given then the connection will only listen to events not published to a channel.
 ```
 // Connect to an event server without subscribing to a channel.
 sseLyr.connectToEventServer('featureId', 'https://my-event-server.com/event-stream/');
