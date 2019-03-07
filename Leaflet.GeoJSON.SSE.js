@@ -24,9 +24,9 @@ var GeoJsonSSE = L.GeoJSON.extend({
         // set stream source
         let sourceUrl
         if (channelName !== null){
-            sourceUrl = `${this.options.eventUrl}?channel=${channelName}`
+            sourceUrl = `${this.options.url}?channel=${channelName}`
         } else {
-            sourceUrl = `${this.options.eventUrl}`
+            sourceUrl = `${this.options.url}`
         }
         let source = new EventSource(sourceUrl);
 
