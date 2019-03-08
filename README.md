@@ -42,7 +42,7 @@ var sseLyr = L.geoSSE('my-data.geojson', {
 });
 ```
 ### Connecting to the event server
-The connection requires that you pass in a geojson property attribute that uniquely identifies the feature, and optionally specify a channel name to subscribe to. If no channel name is given then the connection will only listen to events not published to a specific channel.
+The connection requires that you pass in a geojson property attribute that uniquely identifies the feature. Optionally you may specify a channel name to subscribe to, if your event server implements channels. If no channel name is given then the connection will only listen to events not published to a specific channel.
 ```
 // Connect to an event server without subscribing to a channel.
 sseLyr.connectToEventServer('featureId');
