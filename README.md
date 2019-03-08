@@ -24,8 +24,18 @@ data:
 ```
 ## Usage
 ### Initializing
+Initialize same as any `L.geoJson` instance. You must pass in a `url` option to identify the event source.
+
+Initialize an empty layer. Used when you don't care about history and only want to monitor events that are created after establishing connection to event server.
 ```
-// Initialize same as any L.geoJson instance.
+var sseLyr = L.geoJsonSSE(null, {
+    url: 'https://my-site.com/stream'
+    // set other layer options...
+});
+```
+
+Alternatively you can initialize with some existing data. Used when you want to establish the initial state by loading all previously created features on connection to event server.
+```
 var sseLyr = L.geoJsonSSE('my-data.geojson', {
     url: 'https://my-site.com/stream'
     // set other layer options...
