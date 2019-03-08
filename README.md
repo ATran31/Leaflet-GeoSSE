@@ -1,5 +1,5 @@
 ![Leaflet 1.0 compatible!](https://img.shields.io/badge/Leaflet%201.0-%E2%9C%93-1EB300.svg?style=flat)
-# Leaflet SSE
+# Leaflet GeoSSE
 A Leaflet plugin to enable real-time data updates using [server sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events).
 ## Events
 The events published by the server must have a valid geojson feature in the `data` field.
@@ -23,6 +23,12 @@ data:
 }
 ```
 ## Usage
+Add the file to your map HTML head tag below LeafletJS.
+```
+  <!-- Insert below LeafletJs -->
+  <script type = "text/javascript" src="/path/to/Leaflet.GeoSSE.js') }}"></script>
+```
+
 ### Initializing
 Initialize same as any `L.geoJson` instance. You must pass in a `url` option to identify the event source.
 
@@ -76,7 +82,7 @@ sseLyr.eventSource.removeEventListener('crash',crashEvent, false);
 ```
 
 ### Stop monitoring all events
-This will stop listening to all events and close the connection to the server.
+Disconnect from the source to stop listening to all events and close the connection to the server.
 ```
 sseLyr.disconnect()
 ```
