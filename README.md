@@ -45,10 +45,10 @@ var sseLyr = L.geoSSE('my-data.geojson', {
 The connection requires that you pass in a geojson property attribute that uniquely identifies the feature, and optionally specify a channel name to subscribe to. If no channel name is given then the connection will only listen to events not published to a specific channel.
 ```
 // Connect to an event server without subscribing to a channel.
-sseLyr.connectToEventServer(null, 'featureId');
+sseLyr.connectToEventServer('featureId');
 
 // Connect to an event server subscribing to channel 'C1'.
-sseLyr.connectToEventServer('C1', 'featureId');
+sseLyr.connectToEventServer('featureId', 'C1');
 ```
 ### Standard Events
 When a successful connection is established, by default the layer expects following types events:

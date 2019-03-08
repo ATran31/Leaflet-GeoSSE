@@ -7,18 +7,17 @@ var GeoSSE = L.GeoJSON.extend({
     *
     * Extends L.GeoJSON class.
     */
-    connectToEventServer: function(channelName, featureIdField){
+    connectToEventServer: function( featureIdField, channelName=null){
         /*
         * Establishes connection to the event server
         * and subscribes to the event stream, optionally on channelName.
         *
         * Keyword Arguments:
+        * featureIdField (required) - used to identify the feature to update/
+        * replace on update events or delete.
         * channelName (optional) - The channel of the event server to subscribe to.
         * If no channelName is provided, then auto subscribe to events not published
         * to a specific channel.
-        *
-        * featureIdField (required) - used to identify the feature to update/
-        * replace on update events or delete.
         */
 
         let cls=this;
