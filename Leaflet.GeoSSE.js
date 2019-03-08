@@ -1,4 +1,4 @@
-var GeoJsonSSE = L.GeoJSON.extend({
+var GeoSSE = L.GeoJSON.extend({
     /*
     * Feature Layer class used to handle real-time reloading of
     * geojson layers via server sent events.
@@ -116,6 +116,6 @@ var GeoJsonSSE = L.GeoJSON.extend({
 });
 
 // factory function
-L.geoJsonSSE = function (data, options){
-    return new GeoJsonSSE(data, options);
+L.geoSSE = function (data, options){
+    return new GeoSSE(data, options);
 }
