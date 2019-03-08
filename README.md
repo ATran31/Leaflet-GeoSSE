@@ -28,7 +28,7 @@ Initialize same as any `L.geoJson` instance. You must pass in a `url` option to 
 
 Initialize an empty layer. Used when you don't care about history and only want to monitor events that are created after establishing connection to event server.
 ```
-var sseLyr = L.geoJsonSSE(null, {
+var sseLyr = L.geoSSE(null, {
     url: 'https://my-site.com/stream'
     // set other layer options...
 });
@@ -36,19 +36,19 @@ var sseLyr = L.geoJsonSSE(null, {
 
 Alternatively you can initialize with some existing data. Used when you want to establish the initial state by loading all previously created features on connection to event server.
 ```
-var sseLyr = L.geoJsonSSE('my-data.geojson', {
+var sseLyr = L.geoSSE('my-data.geojson', {
     url: 'https://my-site.com/stream'
     // set other layer options...
 });
 ```
 ### Connecting to the event server
-The connection requires that you pass in a property field that uniquely identifies the feature, the url of the event server, and optionally specify a channel name to subscribe to. If no channel name is given then the connection will only listen to events not published to a channel.
+The connection requires that you pass in a geojson property attribute that uniquely identifies the feature, and optionally specify a channel name to subscribe to. If no channel name is given then the connection will only listen to events not published to a specific channel.
 ```
 // Connect to an event server without subscribing to a channel.
-sseLyr.connectToEventServer('featureId', 'https://my-event-server.com/event-stream/');
+sseLyr.connectToEventServer(null, 'featureId');
 
 // Connect to an event server subscribing to channel 'C1'.
-sseLyr.connectToEventServer('featureId', 'https://my-event-server.com/event-stream/', 'C1');
+sseLyr.connectToEventServer('C1', 'featureId');
 ```
 ### Standard Events
 When a successful connection is established, by default the layer expects following types events:
