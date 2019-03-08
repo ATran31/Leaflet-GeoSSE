@@ -1,3 +1,5 @@
+'use strict';
+
 var GeoSSE = L.GeoJSON.extend({
     /*
     * Feature Layer class used to handle real-time reloading of
