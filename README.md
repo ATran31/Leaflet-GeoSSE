@@ -30,12 +30,13 @@ Add the file to your map HTML head tag below LeafletJS.
 ```
 
 ### Initializing
-Initialize same as any `L.geoJson` instance. You must pass in a `url` option to identify the event source.
+Initialize same as any `L.geoJson` instance. You must pass in a `serverUrl` option to identify the event source.
 
 Initialize an empty layer. Used when you don't care about history and only want to monitor events that are created after establishing connection to event server.
 ```
 var sseLyr = L.geoSSE(null, {
-    url: 'https://my-site.com/stream'
+    serverUrl: 'https://my-site.com/stream',
+    featureIdField: 'featureId'
     // set other layer options...
 });
 ```
@@ -43,18 +44,16 @@ var sseLyr = L.geoSSE(null, {
 Alternatively you can initialize with some existing data. Used when you want to establish the initial state by loading all previously created features on connection to event server.
 ```
 var sseLyr = L.geoSSE('my-data.geojson', {
-    url: 'https://my-site.com/stream'
+    serverUrl: 'https://my-site.com/stream'
+    featureIdField: 'featureId'
     // set other layer options...
 });
 ```
 ### Connecting to the event server
-The connection requires that you pass in a geojson property attribute that uniquely identifies the feature. Optionally you may specify a channel name to subscribe to, if your event server implements channels. If no channel name is given then the connection will only listen to events not published to a specific channel.
+The connection requires that you pass in a geojson property attribute that uniquely identifies the feature.
 ```
-// Connect to an event server without subscribing to a channel.
-sseLyr.connectToEventServer('featureId');
-
-// Connect to an event server subscribing to channel 'C1'.
-sseLyr.connectToEventServer('featureId', 'C1');
+// Connect to an event server.
+sseLyr.connectToEventServer();
 ```
 ### Standard Events
 When a successful connection is established, by default the layer expects following types events:
@@ -84,5 +83,5 @@ sseLyr.eventSource.removeEventListener('crash',crashEvent, false);
 ### Stop monitoring all events
 Disconnect from the source to stop listening to all events and close the connection to the server.
 ```
-sseLyr.disconnect()
+sseLyr.disconnect();
 ```
