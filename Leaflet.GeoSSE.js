@@ -105,7 +105,18 @@ var GeoSSE = L.GeoJSON.extend({
         */
         this.eventSource.close();
     },
-
+    setServerUrl: function(url){
+        /*
+        * Updates the serverUrl option.
+        */
+        this.options.serverUrl = url;
+    },
+    setFeatureIdField: function(fieldName){
+        /*
+        * Updates the featureIdField option used to uniquely identify individual features.
+        */
+        this.options.featureIdField = fieldName;
+    }
 });
 
 // factory function
