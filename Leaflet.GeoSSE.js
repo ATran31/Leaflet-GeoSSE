@@ -7,21 +7,21 @@ var GeoSSE = L.GeoJSON.extend({
     *
     * Extends L.GeoJSON class.
     */
-    connectToEventServer: function(){
+    connectToEventStream: function(){
         /*
         * Establishes connection to the event server and subscribes to the event stream.
         */
 
         let cls=this;
 
-        if (typeof this.options.serverUrl === 'undefined'){
-            // throw an error if no serverUrl is provided in options during initialization
-            throw Error('Undefined event serverUrl.');
+        if (typeof this.options.streamUrl === 'undefined'){
+            // throw an error if no streamUrl is provided in options during initialization
+            throw Error('Undefined event streamUrl.');
         } else if (typeof this.options.featureIdField === 'undefined') {
             throw Error('Undefined featureIdField option.');
         } else {
             // set stream source
-            let source = new EventSource(this.options.serverUrl);
+            let source = new EventSource(this.options.streamUrl);
 
             source.addEventListener('create', function createEvent(event) {
                 /*
@@ -93,7 +93,7 @@ var GeoSSE = L.GeoJSON.extend({
             source.onerror = function(event){
                 // reconnect if the connection is closed
                 if (source.readyState === 2){
-                    cls.connectToEventServer();
+                    cls.connectToEventStream();
                 }
             }
 
@@ -102,17 +102,17 @@ var GeoSSE = L.GeoJSON.extend({
     },
     disconnect: function(){
         /*
-        * Disconnect from the event server and unsubscribe from all events.
+        * Disconnect from the event server and unsubscribe from all event streams.
         */
         this.eventSource.close();
     },
-    setServerUrl: function(newServerUrl){
+    setStreamUrl: function(newStreamUrl){
         /*
-        * Updates the event server url option.
+        * Updates the event stream url option.
         * Keyword Arguments:
-        * newServerUrl (required) -- The url of the event server stream.
+        * newStreamUrl (required) -- The url of the event server stream.
         */
-        this.options.serverUrl = newServerUrl;
+        this.options.streamUrl = newStreamUrl;
     },
     setFeatureIdField: function(fieldName){
         /*
@@ -137,14 +137,14 @@ var GeoSSE = L.GeoJSON.extend({
         }
 
         // update the options object
-        this.setServerUrl(serverUrl);
+        this.setStreamUrl(streamUrl);
         this.setFeatureIdField(featureIdField);
 
         // disconnect from the current stream
         this.disconnect();
 
         // connect to the new stream
-        this.connectToEventServer();
+        this.connectToEventStream();
     }
 });
 

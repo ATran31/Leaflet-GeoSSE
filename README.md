@@ -30,32 +30,32 @@ Add the file to your map HTML head tag below LeafletJS.
 ```
 
 ### Initializing
-Initialize same as any `L.geoJson` instance. You must pass in a `serverUrl` option to identify the event source.
+Initialize same as any `L.geoJson` instance. You must pass in a `streamUrl` and `featureIdField` option to identify the event source and individual features respectively.
 
-Initialize an empty layer. Used when you don't care about history and only want to monitor events that are created after establishing connection to event server.
+Initialize an empty layer when you don't care about history and only want to monitor events that are created after establishing connection to event stream.
 ```
 var sseLyr = L.geoSSE(null, {
-    serverUrl: 'https://my-site.com/stream',
+    streamUrl: 'https://my-site.com/stream',
     featureIdField: 'featureId'
     // set other layer options...
 });
 ```
 
-Alternatively you can initialize with some existing data. Used when you want to establish the initial state by loading all previously created features on connection to event server.
+Alternatively you can initialize with some existing data when you want to establish the initial state by loading previously created features on connection to event stream.
 ```
 var sseLyr = L.geoSSE('my-data.geojson', {
-    serverUrl: 'https://my-site.com/stream'
+    streamUrl: 'https://my-site.com/stream'
     featureIdField: 'featureId'
     // set other layer options...
 });
 ```
-### Connecting to the event server
+### Connecting To The Event Stream
 The connection requires that you pass in a geojson property attribute that uniquely identifies the feature.
 ```
-// Connect to an event server.
-sseLyr.connectToEventServer();
+// Connect to an event stream.
+sseLyr.connectToEventStream();
 ```
-### Standard Events
+### Standard Event Types
 When a successful connection is established, by default the layer expects following types events:
 - Create event
 > When a `create` event is received from the server, the feature is added.
@@ -64,7 +64,7 @@ When a successful connection is established, by default the layer expects follow
 - Delete event
 > When a `delete` event is received from the server, the feature is removed.
 
-### Other Events
+### Other Event Types
 In addition to standard events, you can configure your event server to return any other type of events. For example, if your server will be sending `crash` events you can monitor and handle that event by attaching an event listener.
 ```
 // Listen for crash event and log data to console.
@@ -73,14 +73,14 @@ sseLyr.eventSource.addEventListener('crash', function crashEvent(event){
 }, false);
 ```
 
-### Stop monitoring a single event
+### Stop Monitoring A Specific Event Type
 This will only stop monitoring the `crash` event. Note the second and third arguments to `removeEventListener` must match the listener function name and `useCapture` boolean that was entered in the `addEventListener` call above.
 ```
 // Stop listening for crash events.
 sseLyr.eventSource.removeEventListener('crash',crashEvent, false);
 ```
 
-### Stop monitoring all events
+### Stop Monitoring All Events
 Disconnect from the source to stop listening to all events and close the connection to the server.
 ```
 sseLyr.disconnect();
