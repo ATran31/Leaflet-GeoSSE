@@ -16,7 +16,9 @@ var GeoSSE = L.GeoJSON.extend({
 
         if (typeof this.options.serverUrl === 'undefined'){
             // throw an error if no serverUrl is provided in options during initialization
-            throw Error('Undefined event serverUrl.')
+            throw Error('Undefined event serverUrl.');
+        } else if (typeof this.options.featureIdField === 'undefined') {
+            throw Error('Undefined featureIdField option.');
         } else {
             // set stream source
             let source = new EventSource(this.options.serverUrl);
@@ -93,7 +95,6 @@ var GeoSSE = L.GeoJSON.extend({
                 if (source.readyState === 2){
                     cls.connectToEventServer();
                 }
-                console.log(event.data);
             }
 
             this.eventSource = source;
