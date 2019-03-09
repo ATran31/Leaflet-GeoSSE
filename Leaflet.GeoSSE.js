@@ -7,17 +7,9 @@ var GeoSSE = L.GeoJSON.extend({
     *
     * Extends L.GeoJSON class.
     */
-    connectToEventServer: function(featureIdField, channelName=null){
+    connectToEventServer: function(featureIdField){
         /*
-        * Establishes connection to the event server
-        * and subscribes to the event stream, optionally on channelName.
-        *
-        * Keyword Arguments:
-        * featureIdField (required) - used to identify the feature to update/
-        * replace on update events or delete.
-        * channelName (optional) - The channel of the event server to subscribe to.
-        * If no channelName is provided, then auto subscribe to events not published
-        * to a specific channel.
+        * Establishes connection to the event server and subscribes to the event stream.
         */
 
         let cls=this;
@@ -27,13 +19,7 @@ var GeoSSE = L.GeoJSON.extend({
             throw Error('Undefined event serverUrl.')
         } else {
             // set stream source
-            let sourceUrl
-            if (channelName !== null){
-                sourceUrl = `${this.options.serverUrl}?channel=${channelName}`
-            } else {
-                sourceUrl = `${this.options.serverUrl}`
-            }
-            let source = new EventSource(sourceUrl);
+            let source = new EventSource(this.options.serverUrl);
 
             source.addEventListener('create', function createEvent(event) {
                 /*
@@ -105,7 +91,7 @@ var GeoSSE = L.GeoJSON.extend({
             source.onerror = function(event){
                 // reconnect if the connection is closed
                 if (source.readyState === 2){
-                    cls.connectToEventServer(featureIdField, channelName);
+                    cls.connectToEventServer(featureIdField);
                 }
                 console.log(event.data);
             }
@@ -115,10 +101,11 @@ var GeoSSE = L.GeoJSON.extend({
     },
     disconnect: function(){
         /*
-        * Disconnect from the event server and unsubscribe from all channels.
+        * Disconnect from the event server and unsubscribe from all events.
         */
         this.eventSource.close();
-    }
+    },
+
 });
 
 // factory function
