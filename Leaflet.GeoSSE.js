@@ -105,15 +105,19 @@ var GeoSSE = L.GeoJSON.extend({
         */
         this.eventSource.close();
     },
-    setServerUrl: function(url){
+    setServerUrl: function(newServerUrl){
         /*
-        * Updates the serverUrl option.
+        * Updates the event server url option.
+        * Keyword Arguments:
+        * newServerUrl (required) -- The url of the event server stream.
         */
-        this.options.serverUrl = url;
+        this.options.serverUrl = newServerUrl;
     },
     setFeatureIdField: function(fieldName){
         /*
         * Updates the featureIdField option used to uniquely identify individual features.
+        * Keyword Arguments:
+        * fieldName (required) -- The name of the field used to uniquely identify features.
         */
         this.options.featureIdField = fieldName;
     }
