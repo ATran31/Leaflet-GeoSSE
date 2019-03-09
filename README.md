@@ -85,3 +85,14 @@ Disconnect from the source to stop listening to all events and close the connect
 ```
 sseLyr.disconnect();
 ```
+
+### Switch to Another Stream
+Switching streams just involves passing in a new stream url and unique id field to `switchStream()`.
+```
+sseLyr.switchStream('https://some-other/stream', 'otherFieldId');
+```
+
+If you want to remove all currently displayed features in your layer when switching streams simply add a boolean of `true` as the third argument. By default, all features that were loaded by the old stream will remain after connecting to the new stream.
+```
+sseLyr.switchStream('https://some-other/stream', 'otherFieldId', true);
+```
