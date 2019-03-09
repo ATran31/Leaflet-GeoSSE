@@ -7,7 +7,7 @@ var GeoSSE = L.GeoJSON.extend({
     *
     * Extends L.GeoJSON class.
     */
-    connectToEventServer: function( featureIdField, channelName=null){
+    connectToEventServer: function(featureIdField, channelName=null){
         /*
         * Establishes connection to the event server
         * and subscribes to the event stream, optionally on channelName.
@@ -22,91 +22,96 @@ var GeoSSE = L.GeoJSON.extend({
 
         let cls=this;
 
-        // set stream source
-        let sourceUrl
-        if (channelName !== null){
-            sourceUrl = `${this.options.url}?channel=${channelName}`
+        if (typeof this.options.url === 'undefined'){
+            // throw an error if no url is provided in options during initialization
+            throw Error('Undefined event url.')
         } else {
-            sourceUrl = `${this.options.url}`
-        }
-        let source = new EventSource(sourceUrl);
+            // set stream source
+            let sourceUrl
+            if (channelName !== null){
+                sourceUrl = `${this.options.url}?channel=${channelName}`
+            } else {
+                sourceUrl = `${this.options.url}`
+            }
+            let source = new EventSource(sourceUrl);
 
-        source.addEventListener('create', function createEvent(event) {
-            /*
-            * On create events, simply add the data. The expected data sent by this event is a 
-            * geojson feature.
-            */
-            let geojson = JSON.parse(event.data);
-            cls.addData(geojson);
-        }, false);
+            source.addEventListener('create', function createEvent(event) {
+                /*
+                * On create events, simply add the data. The expected data sent by this event is a 
+                * geojson feature.
+                */
+                let geojson = JSON.parse(event.data);
+                cls.addData(geojson);
+            }, false);
 
-        source.addEventListener('update', function updateEvent(event) {
-            /*
-            * On update events, replace the existing feature based on featureId. The expected data sent by  
-            * this event is a single geojson feature.
-            */
-            let geojson = JSON.parse(event.data);
-            for (let l of cls.getLayers()){
-                if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
-                    cls.removeLayer(l);
-                    cls.addData(geojson);
+            source.addEventListener('update', function updateEvent(event) {
+                /*
+                * On update events, replace the existing feature based on featureId. The expected data sent by  
+                * this event is a single geojson feature.
+                */
+                let geojson = JSON.parse(event.data);
+                for (let l of cls.getLayers()){
+                    if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
+                        cls.removeLayer(l);
+                        cls.addData(geojson);
+                    }
                 }
-            }
-        }, false);
+            }, false);
 
-        source.addEventListener('delete', function deleteEvent(event) {
-            /*
-            * On delete events, remove the existing feature based on featureId. The expected data sent by  
-            * this event is a single geojson feature.
-            */
-            let geojson = JSON.parse(event.data);
-            for (let l of cls.getLayers()){
-                if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
-                    cls.removeLayer(l);
+            source.addEventListener('delete', function deleteEvent(event) {
+                /*
+                * On delete events, remove the existing feature based on featureId. The expected data sent by
+                * this event is a single geojson feature.
+                */
+                let geojson = JSON.parse(event.data);
+                for (let l of cls.getLayers()){
+                    if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
+                        cls.removeLayer(l);
+                    }
                 }
+            }, false);
+
+            // handle connection open event
+            source.onopen = function(event){
+                /*
+                * Fired once when readyState changes from 0 (CONNECTING)
+                * to 1 (CONNECTED). DOES NOT fire when the connection is
+                * first established, actually fires when the first event
+                * is received from server.
+                *
+                * DO NOT use 'onopen' event to test/confirm
+                * successful connection to the event server. Instead make a
+                * request to the event server and have it publish a
+                * type='message' event. Then use source.onmessage to confirm you
+                * successfully got the event (this method only works on Firefox).
+                * Alternatively check source.readyState.
+                */
             }
-        }, false);
 
-        // handle connection open event
-        source.onopen = function(event){
-            /*
-            * Fired once when readyState changes from 0 (CONNECTING)
-            * to 1 (CONNECTED). DOES NOT fire when the connection is
-            * first established, actually fires when the first event
-            * is received from server.
-            *
-            * DO NOT use 'onopen' event to test/confirm
-            * successful connection to the event server. Instead make a
-            * request to the event server and have it publish a
-            * type='message' event. Then use source.onmessage to confirm you
-            * successfully got the event (this method only works on Firefox).
-            * Alternatively check source.readyState.
-            */
-        }
+            // handle message event
+            source.onmessage = function(event){
+                /*
+                * Generic 'message' event handler.
+                * Can use this to confirm connection to event server
+                * by making GET request to end point that publishes
+                * a type='message' event.
+                */
 
-        // handle message event
-        source.onmessage = function(event){
-            /*
-            * Generic 'message' event handler.
-            * Can use this to confirm connection to event server
-            * by making GET request to end point that publishes
-            * a type='message' event.
-            */
-
-            //let data = JSON.parse(event.data);
-            //alert(data.message);
-        }
-
-        // handle error event
-        source.onerror = function(event){
-            // reconnect if the connection is closed
-            if (source.readyState === 2){
-                cls.connectToEventServer(channelName, featureIdField);
+                //let data = JSON.parse(event.data);
+                //alert(data.message);
             }
-            console.log(event.data);
-        }
 
-        this.eventSource = source;
+            // handle error event
+            source.onerror = function(event){
+                // reconnect if the connection is closed
+                if (source.readyState === 2){
+                    cls.connectToEventServer(featureIdField, channelName);
+                }
+                console.log(event.data);
+            }
+
+            this.eventSource = source;
+        }
     },
     disconnect: function(){
         /*
