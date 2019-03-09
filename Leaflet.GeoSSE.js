@@ -120,6 +120,30 @@ var GeoSSE = L.GeoJSON.extend({
         * fieldName (required) -- The name of the field used to uniquely identify features.
         */
         this.options.featureIdField = fieldName;
+    },
+    switchStream: function(newStream, featureIdField, emptyLayer=false){
+        /*
+        * Disconnect from the current event stream and connect to a new event stream.
+        * Keyword Arguments:
+        * newStream (required) -- The url of the event stream.
+        * featureIdField (required) -- Name of the field used to uniquely identify features.
+        * emptyLayer (optional) -- Boolean indicating if all features should be removed before switching streams.
+        * Defaults to false.
+        */
+
+        if (emptyLayer){
+            this.clearLayers();
+        }
+
+        // update the options object
+        this.setServerUrl(serverUrl);
+        this.setFeatureIdField(featureIdField);
+
+        // disconnect from the current stream
+        this.disconnect();
+
+        // connect to the new stream
+        this.connectToEventServer();
     }
 });
 
