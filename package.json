@@ -1,0 +1,22 @@
+{
+  "name": "Leaflet-GeoSSE",
+  "author": "An Tran <an.tran2131@gmail.com>",
+  "version": "0.0.0",
+  "license": "MIT",
+  "description": "A LeafletJS plugin to load realtime data using server sent events.",
+  "homepage": "https://github.com/ATran31/Leaflet-GeoSSE#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ATran31/Leaflet-GeoSSE.git"
+  },
+  "browser": "dist/Leaflet.GeoSSE.min.js",
+  "devDependencies": {
+    "uglify-es": ">=3.0.2"
+  },
+  "scripts": {
+    "build": "uglifyjs src/Leaflet.GeoSSE.js -o dist/build.js"
+  },
+  "files": [
+    "dist"
+  ]
+}
