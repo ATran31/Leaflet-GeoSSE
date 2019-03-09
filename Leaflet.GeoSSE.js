@@ -7,7 +7,7 @@ var GeoSSE = L.GeoJSON.extend({
     *
     * Extends L.GeoJSON class.
     */
-    connectToEventServer: function(featureIdField){
+    connectToEventServer: function(){
         /*
         * Establishes connection to the event server and subscribes to the event stream.
         */
@@ -37,7 +37,7 @@ var GeoSSE = L.GeoJSON.extend({
                 */
                 let geojson = JSON.parse(event.data);
                 for (let l of cls.getLayers()){
-                    if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
+                    if (l.feature.properties[cls.options.featureIdField] === geojson.properties[cls.options.featureIdField]){
                         cls.removeLayer(l);
                         cls.addData(geojson);
                     }
@@ -51,7 +51,7 @@ var GeoSSE = L.GeoJSON.extend({
                 */
                 let geojson = JSON.parse(event.data);
                 for (let l of cls.getLayers()){
-                    if (l.feature.properties[featureIdField] === geojson.properties[featureIdField]){
+                    if (l.feature.properties[cls.options.featureIdField] === geojson.properties[cls.options.featureIdField]){
                         cls.removeLayer(l);
                     }
                 }
@@ -91,7 +91,7 @@ var GeoSSE = L.GeoJSON.extend({
             source.onerror = function(event){
                 // reconnect if the connection is closed
                 if (source.readyState === 2){
-                    cls.connectToEventServer(featureIdField);
+                    cls.connectToEventServer();
                 }
                 console.log(event.data);
             }
