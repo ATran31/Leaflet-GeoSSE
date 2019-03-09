@@ -26,7 +26,7 @@ data:
 Add the file to your map HTML head tag below LeafletJS.
 ```
   <!-- Insert below LeafletJs -->
-  <script type = "text/javascript" src="/path/to/Leaflet.GeoSSE.js') }}"></script>
+  <script type = "text/javascript" src="/path/to/Leaflet.GeoSSE.min.js') }}"></script>
 ```
 
 ### Initializing
