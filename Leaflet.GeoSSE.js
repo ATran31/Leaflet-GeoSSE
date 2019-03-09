@@ -22,22 +22,22 @@ var GeoSSE = L.GeoJSON.extend({
 
         let cls=this;
 
-        if (typeof this.options.url === 'undefined'){
-            // throw an error if no url is provided in options during initialization
-            throw Error('Undefined event url.')
+        if (typeof this.options.serverUrl === 'undefined'){
+            // throw an error if no serverUrl is provided in options during initialization
+            throw Error('Undefined event serverUrl.')
         } else {
             // set stream source
             let sourceUrl
             if (channelName !== null){
-                sourceUrl = `${this.options.url}?channel=${channelName}`
+                sourceUrl = `${this.options.serverUrl}?channel=${channelName}`
             } else {
-                sourceUrl = `${this.options.url}`
+                sourceUrl = `${this.options.serverUrl}`
             }
             let source = new EventSource(sourceUrl);
 
             source.addEventListener('create', function createEvent(event) {
                 /*
-                * On create events, simply add the data. The expected data sent by this event is a 
+                * On create events, simply add the data. The expected data sent by this event is a
                 * geojson feature.
                 */
                 let geojson = JSON.parse(event.data);
@@ -46,7 +46,7 @@ var GeoSSE = L.GeoJSON.extend({
 
             source.addEventListener('update', function updateEvent(event) {
                 /*
-                * On update events, replace the existing feature based on featureId. The expected data sent by  
+                * On update events, replace the existing feature based on featureId. The expected data sent by
                 * this event is a single geojson feature.
                 */
                 let geojson = JSON.parse(event.data);
