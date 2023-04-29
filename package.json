@@ -1,7 +1,7 @@
 {
   "name": "leaflet-geosse",
   "author": "An Tran <an.tran2131@gmail.com>",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "description": "A LeafletJS plugin to load realtime data using server sent events.",
   "homepage": "https://github.com/ATran31/Leaflet-GeoSSE#readme",
