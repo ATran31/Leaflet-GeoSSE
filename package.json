@@ -10,13 +10,18 @@
     "url": "https://github.com/ATran31/Leaflet-GeoSSE.git"
   },
   "browser": "dist/Leaflet.GeoSSE.min.js",
+  "main": "src/Leaflet.GeoSSE.src.js",
   "devDependencies": {
     "uglify-es": ">=3.0.2"
   },
+  "peerDependencies": {
+    "leaflet": "^1.0.0"
+  },
   "scripts": {
-    "build": "uglifyjs src/Leaflet.GeoSSE.src.js -o dist/Leaflet.GeoSSE.min.js"
+    "build": "uglifyjs src/Leaflet.GeoSSE.src.js --no-annotations -o dist/Leaflet.GeoSSE.min.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ]
 }
