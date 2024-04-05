@@ -39,14 +39,15 @@ const GeoSSE = L.GeoJSON.extend({
     function deleteEvent(event) {
       const geojson = JSON.parse(event.data);
 
-      for (let l of self.getLayers()) {
-        if (
-          l.feature.properties[featureIdField] ===
-          geojson.properties[featureIdField]
-        ) {
-          self.removeLayer(l);
-        }
+      const layer = self.getLayers().find(finder, geojson.properties);
+
+      if (layer) {
+        self.removeLayer(layer);
       }
+    }
+
+    function finder({feature: {properties}}) {
+      return properties[featureIdField] === this[featureIdField]
     }
 
     const self = this;
