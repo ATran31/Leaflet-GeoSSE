@@ -28,17 +28,8 @@ const GeoSSE = L.GeoJSON.extend({
      * expected data sent by this event is a single geojson feature.
      */
     function updateEvent(event) {
-      const geojson = JSON.parse(event.data);
-
-      for (let l of self.getLayers()) {
-        if (
-          l.feature.properties[featureIdField] ===
-          geojson.properties[featureIdField]
-        ) {
-          self.removeLayer(l);
-          self.addData(geojson);
-        }
-      }
+      deleteEvent(event);
+      createEvent(event);
     }
 
     /**
