@@ -13,6 +13,10 @@ const GeoSSE = L.GeoJSON.extend({
    * stream.
    */
   connectToEventStream: function () {
+    function addFeature(feature) {
+      self.addData(feature);
+    }
+
     /**
      * On create events, simply add the data. The expected data sent this event
      * is a geojson feature.
@@ -20,7 +24,11 @@ const GeoSSE = L.GeoJSON.extend({
     function createEvent(event) {
       const geojson = JSON.parse(event.data);
 
-      self.addData(geojson);
+      if(geojson.type === "Feature") {
+        return addFeature(geojson);
+      }
+
+      geojson.features.forEach(addFeature);
     }
 
     /**
@@ -39,15 +47,23 @@ const GeoSSE = L.GeoJSON.extend({
     function deleteEvent(event) {
       const geojson = JSON.parse(event.data);
 
-      const layer = self.getLayers().find(finder, geojson.properties);
-
-      if (layer) {
-        self.removeLayer(layer);
+      if(geojson.type === "Feature") {
+        return removeFeature(geojson);
       }
+
+      geojson.features.forEach(removeFeature);
     }
 
     function finder({feature: {properties}}) {
       return properties[featureIdField] === this[featureIdField]
+    }
+
+    function removeFeature(feature) {
+      const layer = self.getLayers().find(finder, feature.properties);
+
+      if (layer) {
+        self.removeLayer(layer);
+      }
     }
 
     const self = this;
