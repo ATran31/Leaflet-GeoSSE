@@ -18,8 +18,8 @@ The geojson feature's properties must include a field that uniquely identifies t
       "type": "Point",
       "coordinates": [125.6, 10.1]
     },
+    "id": 1,
     "properties": {
-      "featureId": 1,
       "name": "My Feature"
     }
   }
@@ -40,14 +40,13 @@ Add the file to your map HTML head tag below LeafletJS.
 
 ### Initializing
 
-Initialize same as any `L.geoJson` instance. You must pass in a `streamUrl` and `featureIdField` option to identify the event source and individual features respectively.
+Initialize same as any `L.geoJson` instance. You must pass in a `streamUrl` to identify the event source.
 
 Initialize an empty layer when you don't care about history and only want to monitor events that are created after establishing connection to event stream.
 
 ```js
 var sseLyr = L.geoSSE(null, {
   streamUrl: "https://my-site.com/stream",
-  featureIdField: "featureId",
   // set other layer options...
 });
 ```
@@ -57,7 +56,6 @@ Alternatively you can initialize with some existing data when you want to establ
 ```js
 var sseLyr = L.geoSSE('my-data.geojson', {
     streamUrl: 'https://my-site.com/stream'
-    featureIdField: 'featureId'
     // set other layer options...
 });
 ```
