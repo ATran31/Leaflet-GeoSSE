@@ -8,7 +8,7 @@ The events published by the server must have a valid geojson feature in the `dat
 
 The geojson feature's properties must include a field that uniquely identifies the feature. This identifier is used to facilitate replacement of the current feature with its updated instance when the server sends an update event.
 
-### Example event from server:
+### Example event from server
 
 ```json
 {
@@ -73,12 +73,10 @@ sseLyr.connectToEventStream();
 
 When a successful connection is established, by default the layer expects following types events:
 
-- Create event
-  > When a `create` event is received from the server, the feature is added.
-- Update event
-  > When an `update` event is received from the server, the feature is replaced. Update events are sent after any change to one or more feature properties.
-- Delete event
-  > When a `delete` event is received from the server, the feature is removed.
+- Add event
+  > When an `add` event is received from the server, the feature is added or updated.
+- Remove event
+  > When a `remove` event is received from the server, the feature is removed.
 
 ### Other Event Types
 

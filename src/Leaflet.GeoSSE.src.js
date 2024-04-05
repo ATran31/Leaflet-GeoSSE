@@ -24,34 +24,6 @@ const GeoSSE = L.GeoJSON.extend({
       self.addData(feature);
     }
 
-    /**
-     * On create events, simply add the data. The expected data sent this event
-     * is a geojson feature.
-     */
-    function createEvent(event) {
-      const geojson = JSON.parse(event.data);
-
-      if(geojson.type === "Feature") {
-        return addFeature(geojson);
-      }
-
-      geojson.features.forEach(addFeature);
-    }
-
-    /**
-     * On delete events, remove the existing feature based on featureId. The
-     * expected data sent by this event is a single geojson feature.
-     */
-    function deleteEvent(event) {
-      const geojson = JSON.parse(event.data);
-
-      if(geojson.type === "Feature") {
-        return removeFeature(geojson);
-      }
-
-      geojson.features.forEach(removeFeature);
-    }
-
     function finder({feature: {id}}) {
       return id === this.id
     }
@@ -70,13 +42,39 @@ const GeoSSE = L.GeoJSON.extend({
       }
     }
 
+
+    //
+    // Event handlers
+    //
+
     /**
-     * On update events, replace the existing feature based on featureId. The
-     * expected data sent by this event is a single geojson feature.
+     * On add events, replace the existing feature based on id. Expected data
+     * sent by this event is a geojson Feature or FeatureCollection.
      */
-    function updateEvent(event) {
-      deleteEvent(event);
-      createEvent(event);
+    function add(event) {
+      remove(event);
+
+      const geojson = JSON.parse(event.data);
+
+      if(geojson.type === "Feature") {
+        return addFeature(geojson);
+      }
+
+      geojson.features.forEach(addFeature);
+    }
+
+    /**
+     * On remove events, remove the existing feature based on id. The expected
+     * data sent by this event is a single geojson Feature or FeatureCollection.
+     */
+    function remove(event) {
+      const geojson = JSON.parse(event.data);
+
+      if(geojson.type === "Feature") {
+        return removeFeature(geojson);
+      }
+
+      geojson.features.forEach(removeFeature);
     }
 
 
@@ -91,9 +89,8 @@ const GeoSSE = L.GeoJSON.extend({
     // set stream source
     const source = new EventSource(this.options.streamUrl);
 
-    source.addEventListener("create", createEvent, false);
-    source.addEventListener("delete", deleteEvent, false);
-    source.addEventListener("update", updateEvent, false);
+    source.addEventListener("add", add, false);
+    source.addEventListener("remove", remove, false);
 
     /**
      * handle connection open event
