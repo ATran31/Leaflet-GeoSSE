@@ -32,15 +32,6 @@ const GeoSSE = L.GeoJSON.extend({
     }
 
     /**
-     * On update events, replace the existing feature based on featureId. The
-     * expected data sent by this event is a single geojson feature.
-     */
-    function updateEvent(event) {
-      deleteEvent(event);
-      createEvent(event);
-    }
-
-    /**
      * On delete events, remove the existing feature based on featureId. The
      * expected data sent by this event is a single geojson feature.
      */
@@ -66,6 +57,16 @@ const GeoSSE = L.GeoJSON.extend({
       }
     }
 
+    /**
+     * On update events, replace the existing feature based on featureId. The
+     * expected data sent by this event is a single geojson feature.
+     */
+    function updateEvent(event) {
+      deleteEvent(event);
+      createEvent(event);
+    }
+
+
     const self = this;
     const {featureIdField} = this.options;
 
@@ -83,8 +84,8 @@ const GeoSSE = L.GeoJSON.extend({
     const source = new EventSource(this.options.streamUrl);
 
     source.addEventListener("create", createEvent, false);
-    source.addEventListener("update", updateEvent, false);
     source.addEventListener("delete", deleteEvent, false);
+    source.addEventListener("update", updateEvent, false);
 
     /**
      * handle connection open event
