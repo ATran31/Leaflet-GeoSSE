@@ -177,5 +177,3 @@ const GeoSSE = L.GeoJSON.extend({
 L.geoSSE = function (data, options) {
   return new GeoSSE(data, options);
 };
-
-export default GeoSSE;
