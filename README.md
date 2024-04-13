@@ -127,3 +127,16 @@ If you want to remove all currently displayed features in your layer when switch
 ```js
 sseLyr.switchStream("https://some-other/stream", "otherFieldId", true);
 ```
+
+# Working Example
+
+To see the working example of this plugin locally
+
+```bash
+# install dependencies if needed
+npm install -w examples
+
+npm run dev -w examples
+```
+
+An example map will be available at `localhost:3000` where you can see point features being created, updated and deleted.

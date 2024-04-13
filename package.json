@@ -23,5 +23,8 @@
   "files": [
     "dist",
     "src"
+  ],
+  "workspaces": [
+    "examples"
   ]
 }
