@@ -64,8 +64,6 @@ var sseLyr = L.geoSSE('my-data.geojson', {
 
 ### Connecting To The Event Stream
 
-The connection requires that you pass in a geojson property attribute that uniquely identifies the feature.
-
 ```js
 // Connect to an event stream.
 sseLyr.connectToEventStream();
@@ -73,7 +71,7 @@ sseLyr.connectToEventStream();
 
 ### Standard Event Types
 
-When a successful connection is established, by default the layer expects following types events:
+When a successful connection is established, by default the layer listens for the following types of events:
 
 - Create event
   > When a `create` event is received from the server, the feature is added.

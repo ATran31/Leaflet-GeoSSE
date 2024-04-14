@@ -18,7 +18,8 @@
     "leaflet": "^1.0.0"
   },
   "scripts": {
-    "build": "uglifyjs src/Leaflet.GeoSSE.src.js --no-annotations -o dist/Leaflet.GeoSSE.min.js"
+    "build": "uglifyjs src/Leaflet.GeoSSE.src.js --no-annotations -o dist/Leaflet.GeoSSE.min.js",
+    "publish": "npm run build && npm publish"
   },
   "files": [
     "dist",
