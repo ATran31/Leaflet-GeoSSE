@@ -5,7 +5,7 @@
  * Feature Layer class used to handle real-time reloading of geojson layers via
  * server sent events.
  *
- * Extends L.GeoJSON class.
+ * @extends L.GeoJSON class.
  */
 const GeoSSE = L.GeoJSON.extend({
   /**
@@ -14,27 +14,35 @@ const GeoSSE = L.GeoJSON.extend({
    */
   connectToEventStream: function () {
     function addFeature(feature) {
-      if (!feature.id) {
+      if (!(self.options.featureIdField || feature.id)) {
         return console.warn(
-          "Feature id is required to add a feature, so it can be removed.",
-          feature
+          "`featureIdField` option or Feature `id` field are required to add " +
+          "a feature, so it can be updated or removed.", feature
         );
       }
 
       self.addData(feature);
     }
 
-    function finder({feature: {id}}) {
+    function finderId({feature: {id}}) {
       return id === this.id
     }
 
+    function finderIdField({feature: {properties}}) {
+      const {featureIdField} = self.options;
+
+      return properties[featureIdField] === this.properties[featureIdField];
+    }
+
     function removeFeature(feature) {
-      if (!feature.id) {
+      if (!(self.options.featureIdField || feature.id)) {
         return console.warn(
-          "Feature id is required to delete a feature.", feature
+          "`featureIdField` option or Feature `id` field are required to " +
+          "delete a feature.", feature
         );
       }
 
+      const finder = self.options.featureIdField ? finderIdField : finderId;
       const layer = self.getLayers().find(finder, feature);
 
       if (layer) {
@@ -140,28 +148,43 @@ const GeoSSE = L.GeoJSON.extend({
 
   /**
    * Updates the event stream url option.
-   * Keyword Arguments:
-   * newStreamUrl (required) -- The url of the event server stream.
+   *
+   * @param {string} newStreamUrl - The url of the event server stream.
    */
   setStreamUrl: function (newStreamUrl) {
     this.options.streamUrl = newStreamUrl;
   },
 
   /**
+   * Updates the featureIdField option used to uniquely identify individual
+   * features.
+   *
+   * @param {string} fieldName - The name of the field used to uniquely identify
+   * features.
+   */
+  setFeatureIdField: function (fieldName) {
+    this.options.featureIdField = fieldName;
+  },
+
+  /**
    * Disconnect from the current event stream and connect to a new event stream.
    *
-   * Keyword Arguments:
-   * newStream (required) -- The url of the event stream.
-   * emptyLayer (optional) -- Boolean indicating if all features should be
-   * removed before switching streams. Defaults to false.
+   * @param {string} newStream - The url of the event stream.
+   * @param {string} [featureIdField] - Name of the field used to uniquely
+   * identify features.
+   * @param {boolean} [emptyLayer] - Boolean indicating if all features should
+   * be removed before switching streams. Defaults to false.
    */
-  switchStream: function (newStream, emptyLayer = false) {
+  switchStream: function (newStream, featureIdField, emptyLayer = false) {
     if (emptyLayer) {
       this.clearLayers();
     }
 
     // update the options object
     this.setStreamUrl(newStream);
+    if(featureIdField !== undefined) {
+      this.setFeatureIdField(featureIdField);
+    }
 
     // disconnect from the current stream
     this.disconnect();

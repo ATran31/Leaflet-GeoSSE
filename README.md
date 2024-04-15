@@ -40,7 +40,7 @@ Add the file to your map HTML head tag below LeafletJS.
 
 ### Initializing
 
-Initialize same as any `L.geoJson` instance. You must pass in a `streamUrl` to identify the event source.
+Initialize same as any `L.geoJson` instance. You must pass in a `streamUrl` and optional `featureIdField` to identify the event source and individual features respectively.
 
 Initialize an empty layer when you don't care about history and only want to monitor events that are created after establishing connection to event stream.
 
