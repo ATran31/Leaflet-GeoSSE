@@ -78,6 +78,15 @@ When a successful connection is established, by default the layer expects follow
 - Remove event
   > When a `remove` event is received from the server, the feature is removed.
 
+#### Deprecated Event Types
+
+- Create event
+  > When a `create` event is received from the server, the feature is added.
+- Update event
+  > When an `update` event is received from the server, the feature is replaced. Update events are sent after any change to one or more feature properties.
+- Delete event
+  > When a `delete` event is received from the server, the feature is removed. Alias of `remove` event.
+
 ### Other Event Types
 
 In addition to standard events, you can configure your event server to return any other type of events. For example, if your server will be sending `crash` events you can monitor and handle that event by attaching an event listener.

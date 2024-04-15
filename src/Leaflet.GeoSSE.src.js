@@ -61,7 +61,10 @@ const GeoSSE = L.GeoJSON.extend({
      */
     function add(event) {
       remove(event);
+      create(event);
+    }
 
+    function create(event) {
       const geojson = JSON.parse(event.data);
 
       if(geojson.type === "Feature") {
@@ -69,6 +72,19 @@ const GeoSSE = L.GeoJSON.extend({
       }
 
       geojson.features.forEach(addFeature);
+    }
+
+    function update(event) {
+      const {options: {featureIdField}} = self;
+
+      const geojson = JSON.parse(event.data);
+      const {properties: {[featureIdField]: id}} = geojson;
+
+      for (let layer of self.getLayers())
+        if (layer.feature.properties[featureIdField] === id) {
+          self.removeLayer(layer);
+          self.addData(geojson);
+        }
     }
 
     /**
@@ -99,6 +115,11 @@ const GeoSSE = L.GeoJSON.extend({
 
     source.addEventListener("add", add, false);
     source.addEventListener("remove", remove, false);
+
+    // Deprecated event types
+    source.addEventListener("create", create, false);
+    source.addEventListener("update", update, false);
+    source.addEventListener("delete", remove, false);
 
     /**
      * handle connection open event
