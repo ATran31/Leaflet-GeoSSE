@@ -24,6 +24,41 @@ const GeoSSE = L.GeoJSON.extend({
       self.addData(feature);
     }
 
+    function updateOrAddFeature(feature) {
+      if (!(self.options.featureIdField || feature.id)) {
+        return console.warn(
+          "`featureIdField` option or Feature `id` field are required to add " +
+          "a feature, so it can be updated or removed.", feature
+        );
+      }
+
+      const layer = getLayer(feature);
+
+      // Layer not found, add it
+      if (!layer) return self.addData(feature);
+
+      // Check for feature type mismatch
+      const {geometry} = layer.feature;
+      const {type} = feature.geometry;
+
+      if(geometry.type !== type)
+        return console.warn(
+          "Feature type mismatch. Existing feature type is ${geometry.type} " +
+          `and new feature type is ${type}.`, feature
+        );
+
+      // Update the position of the Marker
+      layer.setLatLngs(feature.geometry.coordinates);
+
+      // Re-init the layer
+      layer.feature = feature;
+      self.resetStyle(layer);
+
+      const {onEachFeature} = self.options;
+
+      if(onEachFeature) onEachFeature(feature, layer);
+    }
+
     function finderId({feature: {id}}) {
       return id === this.id
     }
@@ -34,6 +69,12 @@ const GeoSSE = L.GeoJSON.extend({
       return properties[featureIdField] === this.properties[featureIdField];
     }
 
+    function getLayer(feature) {
+      const finder = self.options.featureIdField ? finderIdField : finderId;
+
+      return self.getLayers().find(finder, feature);
+    }
+
     function removeFeature(feature) {
       if (!(self.options.featureIdField || feature.id)) {
         return console.warn(
@@ -42,8 +83,7 @@ const GeoSSE = L.GeoJSON.extend({
         );
       }
 
-      const finder = self.options.featureIdField ? finderIdField : finderId;
-      const layer = self.getLayers().find(finder, feature);
+      const layer = getLayer(feature);
 
       if (layer) {
         self.removeLayer(layer);
@@ -60,8 +100,13 @@ const GeoSSE = L.GeoJSON.extend({
      * sent by this event is a geojson Feature or FeatureCollection.
      */
     function add(event) {
-      remove(event);
-      create(event);
+      const geojson = JSON.parse(event.data);
+
+      if(geojson.type === "Feature") {
+        return updateOrAddFeature(geojson);
+      }
+
+      geojson.features.forEach(updateOrAddFeature);
     }
 
     function create(event) {
