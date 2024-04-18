@@ -8,7 +8,7 @@ The events published by the server must have a valid geojson feature in the `dat
 
 The geojson feature's properties must include a field that uniquely identifies the feature. This identifier is used to facilitate replacement of the current feature with its updated instance when the server sends an update event.
 
-### Example event from server:
+### Example event from server
 
 ```json
 {
@@ -18,8 +18,8 @@ The geojson feature's properties must include a field that uniquely identifies t
       "type": "Point",
       "coordinates": [125.6, 10.1]
     },
+    "id": 1,
     "properties": {
-      "featureId": 1,
       "name": "My Feature"
     }
   }
@@ -40,14 +40,13 @@ Add the file to your map HTML head tag below LeafletJS.
 
 ### Initializing
 
-Initialize same as any `L.geoJson` instance. You must pass in a `streamUrl` and `featureIdField` option to identify the event source and individual features respectively.
+Initialize same as any `L.geoJson` instance. You must pass in a `streamUrl` and optional `featureIdField` to identify the event source and individual features respectively.
 
 Initialize an empty layer when you don't care about history and only want to monitor events that are created after establishing connection to event stream.
 
 ```js
 var sseLyr = L.geoSSE(null, {
   streamUrl: "https://my-site.com/stream",
-  featureIdField: "featureId",
   // set other layer options...
 });
 ```
@@ -57,7 +56,6 @@ Alternatively you can initialize with some existing data when you want to establ
 ```js
 var sseLyr = L.geoSSE('my-data.geojson', {
     streamUrl: 'https://my-site.com/stream'
-    featureIdField: 'featureId'
     // set other layer options...
 });
 ```
@@ -75,12 +73,19 @@ sseLyr.connectToEventStream();
 
 When a successful connection is established, by default the layer expects following types events:
 
+- Add event
+  > When an `add` event is received from the server, the feature is added or updated.
+- Remove event
+  > When a `remove` event is received from the server, the feature is removed.
+
+#### Deprecated Event Types
+
 - Create event
   > When a `create` event is received from the server, the feature is added.
 - Update event
   > When an `update` event is received from the server, the feature is replaced. Update events are sent after any change to one or more feature properties.
 - Delete event
-  > When a `delete` event is received from the server, the feature is removed.
+  > When a `delete` event is received from the server, the feature is removed. Alias of `remove` event.
 
 ### Other Event Types
 

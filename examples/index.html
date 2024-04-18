@@ -18,14 +18,14 @@
     <div id="map"></div>
     <script>
         var mymap = L.map('map').setView([38.9072, -77.0369,], 13);
-        
+
         var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 3,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
         OpenStreetMap_Mapnik.addTo(mymap);
-        
-        var streamLyr = L.geoSSE(null, {streamUrl: '/stream', featureIdField: 'post_id'});
+
+            var streamLyr = L.geoSSE(null, { streamUrl: '/stream' });
         mymap.addLayer(streamLyr);
 
         streamLyr.connectToEventStream();
