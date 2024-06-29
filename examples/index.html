@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <title>Leaflet-SSE-Test</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-      integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-      crossorigin=""
-    />
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+          integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+          crossorigin="" />
     <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script
-      src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-      integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-      crossorigin=""
-    ></script>
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+            integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+            crossorigin=""></script>
     <script type="text/javascript" src="/static/Leaflet.GeoSSE.src.js"></script>
   </head>
   <style>
     body {
       overflow: hidden;
     }
+
     #container {
       display: flex;
       height: 100vh;
     }
+
     #map {
       height: 100%;
       width: 50vw;
     }
+
     #log {
       display: flex;
       flex-direction: column;
@@ -40,14 +40,18 @@
       padding: 10px;
       overflow-y: scroll;
     }
+
     #log pre {
       text-wrap: wrap;
     }
   </style>
+
   <body>
     <div id="container">
       <div id="map"></div>
-      <div id="log"><pre>Listening for events...</pre></div>
+      <div id="log">
+        <pre>Listening for events...</pre>
+      </div>
     </div>
     <script>
       const mymap = L.map("map").setView([38.9072, -77.0369], 13);
@@ -74,8 +78,7 @@
             const now = new Date();
             const entry = document.createElement("pre");
             const text = document.createTextNode(
-              `${eventType} (${now.toLocaleDateString()} ${now.toLocaleTimeString()}): ${
-                event.data
+              `${eventType} (${now.toLocaleDateString()} ${now.toLocaleTimeString()}): ${event.data
               }`
             );
             entry.appendChild(text);
@@ -86,4 +89,5 @@
       }
     </script>
   </body>
+
 </html>

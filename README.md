@@ -78,6 +78,13 @@ When a successful connection is established, by default the layer listens for th
 
 #### Deprecated Event Types
 
+- Add event
+  > When an `add` event is received from the server, the feature is added or updated.
+- Remove event
+  > When a `remove` event is received from the server, the feature is removed.
+
+#### Deprecated Event Types
+
 - Create event
   > When a `create` event is received from the server, the feature is added.
 - Update event

@@ -48,7 +48,8 @@ const GeoSSE = L.GeoJSON.extend({
         );
 
       // Update the position of the Marker
-      layer.setLatLngs(feature.geometry.coordinates);
+      const {coordinates: [lng, lat]} = feature.geometry;
+      layer.setLatLng({lat, lng});
 
       // Re-init the layer
       layer.feature = feature;
