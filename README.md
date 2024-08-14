@@ -54,7 +54,10 @@ var sseLyr = L.geoSSE(null, {
 Alternatively you can initialize with some existing data when you want to establish the initial state by loading previously created features on connection to event stream.
 
 ```js
-var sseLyr = L.geoSSE('my-data.geojson', {
+var geojson = await fetch('my-data.geojson')
+geojson = await geojson.json()
+
+var sseLyr = L.geoSSE(geojson, {
     streamUrl: 'https://my-site.com/stream'
     // set other layer options...
 });
