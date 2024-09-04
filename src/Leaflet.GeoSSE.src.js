@@ -43,7 +43,7 @@ const GeoSSE = L.GeoJSON.extend({
 
       if(geometry.type !== type)
         return console.warn(
-          "Feature type mismatch. Existing feature type is ${geometry.type} " +
+          `Feature type mismatch: existing feature type is ${geometry.type} ` +
           `and new feature type is ${type}.`, feature
         );
 
