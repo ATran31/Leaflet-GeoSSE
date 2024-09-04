@@ -37,10 +37,15 @@ const GeoSSE = L.GeoJSON.extend({
       // Layer not found, add it
       if (!layer) return self.addData(feature);
 
-      // Check for feature type mismatch
       const {geometry} = layer.feature;
-      const {type} = feature.geometry;
 
+      // Check if the feature is unlocated
+      if(geometry === null)
+        return console.warn("Feature is unlocated.", feature);
+
+      const {coordinates: [lng, lat], type} = feature.geometry;
+
+      // Check for feature type mismatch
       if(geometry.type !== type)
         console.warn(
           `Feature type mismatch: existing feature type is ${geometry.type} ` +
@@ -48,7 +53,6 @@ const GeoSSE = L.GeoJSON.extend({
         );
 
       // Update the position of the Marker
-      const {coordinates: [lng, lat]} = feature.geometry;
       layer.setLatLng({lat, lng});
 
       // Re-init the layer
