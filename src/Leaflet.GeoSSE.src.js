@@ -210,7 +210,12 @@ const GeoSSE = L.GeoJSON.extend({
    * Disconnect from the event server and unsubscribe from all event streams.
    */
   disconnect: function () {
-    this.eventSource.close();
+    const {eventSource} = this;
+
+    if(!eventSource) return;
+
+    eventSource.close();
+    this.eventSource = null;
   },
 
   /**
