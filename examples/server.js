@@ -11,6 +11,7 @@ const create_obj = {
     post_id: 1,
     lat: 38.9072,
     lon: -77.036,
+    popup_text: "Create event",
   },
 };
 
@@ -21,13 +22,41 @@ const update_obj = {
     post_id: 1,
     lat: 34.0522,
     lon: -118.2437,
+    popup_text: "Update event",
+  },
+};
+
+const add_create_obj = {
+  type: "Feature",
+  geometry: { type: "Point", coordinates: [-106.3468, 56.1304] },
+  properties: {
+    post_id: 2,
+    lat: 56.1304,
+    lon: -106.3468,
+    popup_text: "Add event",
+  },
+};
+
+const add_update_obj = {
+  type: "Feature",
+  geometry: { type: "Point", coordinates: [-102.5528, 23.6345] },
+  properties: {
+    post_id: 2,
+    lat: 23.6345,
+    lon: -102.5528,
+    popup_text: "Update (via Add) event",
   },
 };
 
 let events = { create: create_obj, update: update_obj, delete: update_obj };
 function* generate() {
   while (true) {
-    for (const [event, geojson] of Object.entries(events)) {
+    for (const [event, geojson] of [
+      ...Object.entries(events),
+      ["add", add_create_obj],
+      ["add", add_update_obj],
+      ["remove", add_update_obj],
+    ]) {
       const resp = `event: ${event}\ndata: ${JSON.stringify(geojson)}\n\n`;
       console.log("event: ", event);
       yield resp;

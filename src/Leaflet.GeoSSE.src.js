@@ -1,6 +1,5 @@
 "use strict";
 
-
 /**
  * Feature Layer class used to handle real-time reloading of geojson layers via
  * server sent events.
@@ -17,7 +16,8 @@ const GeoSSE = L.GeoJSON.extend({
       if (!(self.options.featureIdField || feature.id)) {
         return console.warn(
           "`featureIdField` option or Feature `id` field are required to add " +
-          "a feature, so it can be updated or removed.", feature
+            "a feature, so it can be updated or removed.",
+          feature
         );
       }
 
@@ -28,7 +28,8 @@ const GeoSSE = L.GeoJSON.extend({
       if (!(self.options.featureIdField || feature.id)) {
         return console.warn(
           "`featureIdField` option or Feature `id` field are required to add " +
-          "a feature, so it can be updated or removed.", feature
+            "a feature, so it can be updated or removed.",
+          feature
         );
       }
 
@@ -37,39 +38,45 @@ const GeoSSE = L.GeoJSON.extend({
       // Layer not found, add it
       if (!layer) return self.addData(feature);
 
-      const {geometry} = layer.feature;
+      const { geometry } = layer.feature;
 
       // Check if the feature is unlocated
-      if(geometry === null)
+      if (geometry === null)
         return console.warn("Feature is unlocated.", feature);
 
-      const {coordinates: [lng, lat], type} = feature.geometry;
+      const {
+        coordinates: [lng, lat],
+        type,
+      } = feature.geometry;
 
       // Check for feature type mismatch
-      if(geometry.type !== type)
+      if (geometry.type !== type)
         console.warn(
           `Feature type mismatch: existing feature type is ${geometry.type} ` +
-          `and new feature type is ${type}.`, feature
+            `and new feature type is ${type}.`,
+          feature
         );
 
-      // Update the position of the Marker
-      layer.setLatLng({lat, lng});
-
-      // Re-init the layer
+      // Update the feature to ensure geojson properties are updated
+      // before calling setLatLng to ensure any attached event listeners
+      // e.g. 'move' event, has the updated properties available for use.
       layer.feature = feature;
+
+      // Update the position of the Marker
+      layer.setLatLng({ lat, lng });
       self.resetStyle(layer);
 
-      const {onEachFeature} = self.options;
+      const { onEachFeature } = self.options;
 
-      if(onEachFeature) onEachFeature(feature, layer);
+      if (onEachFeature) onEachFeature(feature, layer);
     }
 
-    function finderId({feature: {id}}) {
-      return id === this.id
+    function finderId({ feature: { id } }) {
+      return id === this.id;
     }
 
-    function finderIdField({feature: {properties}}) {
-      const {featureIdField} = self.options;
+    function finderIdField({ feature: { properties } }) {
+      const { featureIdField } = self.options;
 
       return properties[featureIdField] === this.properties[featureIdField];
     }
@@ -84,7 +91,8 @@ const GeoSSE = L.GeoJSON.extend({
       if (!(self.options.featureIdField || feature.id)) {
         return console.warn(
           "`featureIdField` option or Feature `id` field are required to " +
-          "delete a feature.", feature
+            "delete a feature.",
+          feature
         );
       }
 
@@ -94,7 +102,6 @@ const GeoSSE = L.GeoJSON.extend({
         self.removeLayer(layer);
       }
     }
-
 
     //
     // Event handlers
@@ -107,7 +114,7 @@ const GeoSSE = L.GeoJSON.extend({
     function add(event) {
       const geojson = JSON.parse(event.data);
 
-      if(geojson.type === "Feature") {
+      if (geojson.type === "Feature") {
         return updateOrAddFeature(geojson);
       }
 
@@ -117,7 +124,7 @@ const GeoSSE = L.GeoJSON.extend({
     function create(event) {
       const geojson = JSON.parse(event.data);
 
-      if(geojson.type === "Feature") {
+      if (geojson.type === "Feature") {
         return addFeature(geojson);
       }
 
@@ -125,10 +132,14 @@ const GeoSSE = L.GeoJSON.extend({
     }
 
     function update(event) {
-      const {options: {featureIdField}} = self;
+      const {
+        options: { featureIdField },
+      } = self;
 
       const geojson = JSON.parse(event.data);
-      const {properties: {[featureIdField]: id}} = geojson;
+      const {
+        properties: { [featureIdField]: id },
+      } = geojson;
 
       for (let layer of self.getLayers())
         if (layer.feature.properties[featureIdField] === id) {
@@ -144,13 +155,12 @@ const GeoSSE = L.GeoJSON.extend({
     function remove(event) {
       const geojson = JSON.parse(event.data);
 
-      if(geojson.type === "Feature") {
+      if (geojson.type === "Feature") {
         return removeFeature(geojson);
       }
 
       geojson.features.forEach(removeFeature);
     }
-
 
     const self = this;
 
@@ -214,9 +224,9 @@ const GeoSSE = L.GeoJSON.extend({
    * Disconnect from the event server and unsubscribe from all event streams.
    */
   disconnect: function () {
-    const {eventSource} = this;
+    const { eventSource } = this;
 
-    if(!eventSource) return;
+    if (!eventSource) return;
 
     eventSource.close();
     this.eventSource = null;
@@ -258,7 +268,7 @@ const GeoSSE = L.GeoJSON.extend({
 
     // update the options object
     this.setStreamUrl(newStream);
-    if(featureIdField !== undefined) {
+    if (featureIdField !== undefined) {
       this.setFeatureIdField(featureIdField);
     }
 
@@ -267,7 +277,7 @@ const GeoSSE = L.GeoJSON.extend({
 
     // connect to the new stream
     this.connectToEventStream();
-  }
+  },
 });
 
 /**

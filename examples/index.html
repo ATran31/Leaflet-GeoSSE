@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <title>Leaflet-SSE-Test</title>
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-          integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-          crossorigin="" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+      integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+      crossorigin=""
+    />
     <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-            integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-            crossorigin=""></script>
+    <script
+      src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+      integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+      crossorigin=""
+    ></script>
     <script type="text/javascript" src="/static/Leaflet.GeoSSE.src.js"></script>
   </head>
   <style>
@@ -68,17 +71,41 @@
       const streamLyr = L.geoSSE(null, {
         streamUrl: "/stream",
         featureIdField: "post_id",
+        pointToLayer: (feature, latlng) => {
+          const openPopupAfterEvent = (event) => {
+            event.target
+              .bindPopup(event.target.feature.properties.popup_text, {
+                closeButton: false,
+              })
+              .openPopup();
+          };
+
+          if (feature.properties.post_id > 1) {
+            return L.circleMarker(latlng, {
+              radius: 8,
+              fillColor: "#ff7800",
+              color: "#000",
+              weight: 1,
+              opacity: 1,
+              fillOpacity: 0.8,
+            })
+              .on("add", openPopupAfterEvent)
+              .on("move", openPopupAfterEvent);
+          }
+          return L.marker(latlng).on("add", openPopupAfterEvent);
+        },
       });
       mymap.addLayer(streamLyr);
       streamLyr.connectToEventStream();
-      for (const eventType of ["create", "update", "delete"]) {
+      for (const eventType of ["create", "update", "delete", "add", "remove"]) {
         streamLyr.eventSource.addEventListener(
           eventType,
           (event) => {
             const now = new Date();
             const entry = document.createElement("pre");
             const text = document.createTextNode(
-              `${eventType} (${now.toLocaleDateString()} ${now.toLocaleTimeString()}): ${event.data
+              `${eventType} (${now.toLocaleDateString()} ${now.toLocaleTimeString()}): ${
+                event.data
               }`
             );
             entry.appendChild(text);
@@ -89,5 +116,4 @@
       }
     </script>
   </body>
-
 </html>

@@ -34,7 +34,7 @@ Add the file to your map HTML head tag below LeafletJS.
 <!-- Insert below LeafletJs -->
 <script
   type="text/javascript"
-  src="https://www.unpkg.com/browse/leaflet-geosse@1.0.1/dist/Leaflet.GeoSSE.min.js"
+  src="https://www.unpkg.com/browse/leaflet-geosse@1.2.4/dist/Leaflet.GeoSSE.min.js"
 ></script>
 ```
 
@@ -54,12 +54,12 @@ var sseLyr = L.geoSSE(null, {
 Alternatively you can initialize with some existing data when you want to establish the initial state by loading previously created features on connection to event stream.
 
 ```js
-var geojson = await fetch('my-data.geojson')
-geojson = await geojson.json()
+var geojson = await fetch("my-data.geojson");
+geojson = await geojson.json();
 
 var sseLyr = L.geoSSE(geojson, {
-    streamUrl: 'https://my-site.com/stream'
-    // set other layer options...
+  streamUrl: "https://my-site.com/stream",
+  // set other layer options...
 });
 ```
 

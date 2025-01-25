@@ -1,13 +1,13 @@
 {
   "name": "leaflet-geosse",
   "author": "An Tran <an.tran2131@gmail.com>",
-  "version": "1.2.1",
+  "verion": "1.2.2",
   "license": "MIT",
   "description": "A LeafletJS plugin to load realtime data using server sent events.",
   "homepage": "https://github.com/ATran31/Leaflet-GeoSSE#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ATran31/Leaflet-GeoSSE.git"
+    "url": "git+https://github.com/ATran31/Leaflet-GeoSSE.git"
   },
   "browser": "dist/Leaflet.GeoSSE.min.js",
   "main": "src/Leaflet.GeoSSE.src.js",
@@ -27,5 +27,6 @@
   ],
   "workspaces": [
     "examples"
-  ]
+  ],
+  "version": "1.2.2"
 }
