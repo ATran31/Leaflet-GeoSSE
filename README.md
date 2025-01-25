@@ -54,7 +54,10 @@ var sseLyr = L.geoSSE(null, {
 Alternatively you can initialize with some existing data when you want to establish the initial state by loading previously created features on connection to event stream.
 
 ```js
-var sseLyr = L.geoSSE('my-data.geojson', {
+var geojson = await fetch('my-data.geojson')
+geojson = await geojson.json()
+
+var sseLyr = L.geoSSE(geojson, {
     streamUrl: 'https://my-site.com/stream'
     // set other layer options...
 });
@@ -70,6 +73,13 @@ sseLyr.connectToEventStream();
 ### Standard Event Types
 
 When a successful connection is established, by default the layer listens for the following types of events:
+
+- Add event
+  > When an `add` event is received from the server, the feature is added or updated.
+- Remove event
+  > When a `remove` event is received from the server, the feature is removed.
+
+#### Deprecated Event Types
 
 - Add event
   > When an `add` event is received from the server, the feature is added or updated.
